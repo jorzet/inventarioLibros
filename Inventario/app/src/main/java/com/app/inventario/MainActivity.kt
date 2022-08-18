@@ -7,21 +7,34 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.app.inventario.databinding.ActivityMainBinding
+import com.app.inventario.downloader.ClientDownloader
+import com.app.inventario.downloader.showImage
+import com.app.inventario.downloader.showName
+import com.app.inventario.downloader.showPlaceHolder
 import com.app.inventario.interactor.SaveSellInteractor
 import com.app.inventario.interactor.SaveSellLocalInteractor
 import com.app.inventario.model.Sell
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
 
+    // binding
     private lateinit var binding: ActivityMainBinding
+
+    // receiver
     private lateinit var mNetworkChangeReceiver: NetworkChangeReceiver
 
+    // flags
     private var countRegisters = 0
     private var isConnected: Boolean = true
     private var savePending: Boolean = true
@@ -35,9 +48,25 @@ class MainActivity : AppCompatActivity() {
         registerNetworkBroadcastForNougat()
     }
 
+    /**
+     * Set up listeners
+     */
     private fun setListeners() {
         binding.sendCloudButton.setOnClickListener {
             handleSaveBook()
+        }
+        binding.addClientButton.setOnClickListener {
+            showAddClient()
+        }
+        binding.clientEdittext.setOnKeyListener { view, keyCode, keyEvent ->
+            if ((keyEvent.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                val client = binding.clientEdittext.text.toString().toUpperCase()
+                binding.clientImageview.showImage(client, this)
+                GlobalScope.launch {
+                    binding.clientNameTextView.showName(client)
+                }
+                true
+            } else false
         }
     }
 
@@ -78,13 +107,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun handleSaveBook() {
+    private fun handleSaveBook() {
         val productId = binding.productEdittext.text.toString()
         val clientId = binding.clientEdittext.text.toString()
         if (productId.isNotEmpty()) {
             if (clientId.isNotEmpty()) {
-                binding.productEdittext.setText("")
+                // reset views
+                binding.productEdittext.run {
+                    setText("")
+                    requestFocus()
+                }
                 binding.clientEdittext.setText("")
+                binding.clientNameTextView.text = ""
+                binding.clientImageview.showPlaceHolder()
+
                 countRegisters++
                 binding.registerCountTextview.text = countRegisters.toString()
                 val sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
@@ -106,17 +142,49 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun showError(error: String) {
-        Toast.makeText(this, error, Toast.LENGTH_SHORT)
+    private fun showAddClient() {
+
     }
 
+    fun showError(error: String) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+    }
+
+    /**
+     * Image loading events
+     */
+    override fun onImageLoaded() {
+        val view: View? = this.currentFocus
+        if (view != null) {
+            val imm: InputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
+    override fun onImageError() {
+        Toast.makeText(this, "Error imagen del cliente no encontrada", Toast.LENGTH_LONG).show()
+    }
+    /** end region **/
+
+
+    /**
+     * Connection Listener
+     */
     interface ConnectionNetworkListener {
         fun onConnected()
         fun onDisconnected()
     }
 
-    class NetworkChangeReceiver(connectionNetworkListener: ConnectionNetworkListener): BroadcastReceiver() {
-        val mConnectionNetworkListener = connectionNetworkListener
+    /**
+     * Connection BroadcastReceiver
+     */
+    class NetworkChangeReceiver(): BroadcastReceiver() {
+        private lateinit var mConnectionNetworkListener: ConnectionNetworkListener
+
+        constructor(connectionNetworkListener: ConnectionNetworkListener): this() {
+            mConnectionNetworkListener = connectionNetworkListener
+        }
+
         override fun onReceive(context: Context?, p1: Intent?) {
             try {
                 val cm = context!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -132,6 +200,5 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
-
     }
 }

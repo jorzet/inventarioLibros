@@ -10,11 +10,11 @@ class BDconnector {
     companion object {
         private const val TAG = "BDConnection"
         private const val driver = "com.mysql.jdbc.Driver"
-        private const val ip = "192.168.100.7"
+        private const val ip = "192.168.100.37"
         private const val port = "3306"
         private const val dataBase = "inventarioLibros"
-        private const val user = "jorgezepeda"
-        private const val password = "1234"
+        private const val user = "jorge"
+        private const val password = "jorge"
     }
     public lateinit var conexionMySQL: Connection
 
