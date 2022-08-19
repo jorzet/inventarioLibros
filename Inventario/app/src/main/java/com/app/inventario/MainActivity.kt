@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setListeners()
+        binding.productEdittext.requestFocus()
         binding.registerCountTextview.text = SaveSellLocalInteractor(baseContext).getCountLocal().toString()
         registerNetworkBroadcastForNougat()
     }
@@ -53,7 +54,8 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
      */
     private fun setListeners() {
         binding.sendCloudButton.setOnClickListener {
-            handleSaveBook()
+            cleanViews()
+            //handleSaveBook()
         }
         binding.addClientButton.setOnClickListener {
             showAddClient()
@@ -65,6 +67,8 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
                 GlobalScope.launch {
                     binding.clientNameTextView.showName(client)
                 }
+
+                handleSaveBook()
                 true
             } else false
         }
@@ -112,15 +116,6 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
         val clientId = binding.clientEdittext.text.toString()
         if (productId.isNotEmpty()) {
             if (clientId.isNotEmpty()) {
-                // reset views
-                binding.productEdittext.run {
-                    setText("")
-                    requestFocus()
-                }
-                binding.clientEdittext.setText("")
-                binding.clientNameTextView.text = ""
-                binding.clientImageview.showPlaceHolder()
-
                 countRegisters++
                 binding.registerCountTextview.text = countRegisters.toString()
                 val sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
@@ -140,6 +135,17 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
         } else {
             showError("Por favor introduce el id del producto")
         }
+    }
+
+    fun cleanViews() {
+        // reset views
+        binding.productEdittext.run {
+            setText("")
+            requestFocus()
+        }
+        binding.clientEdittext.setText("")
+        binding.clientNameTextView.text = ""
+        binding.clientImageview.showPlaceHolder()
     }
 
     private fun showAddClient() {
