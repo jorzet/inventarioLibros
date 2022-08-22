@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
     private fun setListeners() {
         binding.sendCloudButton.setOnClickListener {
             cleanViews()
-            //handleSaveBook()
+            handleSaveBook()
         }
         binding.addClientButton.setOnClickListener {
             showAddClient()
