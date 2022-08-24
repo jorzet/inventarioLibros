@@ -68,7 +68,9 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
                 GlobalScope.launch {
                     binding.clientNameTextView.showName(client)
                 }
-                binding.productEdittext.requestFocus()
+                runOnUiThread {
+                    binding.productEdittext.requestFocus()
+                }
                 handleSaveBook()
                 cleanViews()
                 true
