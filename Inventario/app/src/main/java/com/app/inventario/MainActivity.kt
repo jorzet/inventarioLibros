@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
      */
     private fun setListeners() {
         binding.sendCloudButton.setOnClickListener {
-            binding.productEdittext.requestFocus()
+            binding.productEdittext.post {  binding.productEdittext.requestFocus() }
             handleSaveBook()
             cleanViews()
         }
@@ -68,11 +68,8 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
                 GlobalScope.launch {
                     binding.clientNameTextView.showName(client)
                 }
-                runOnUiThread {
-                    binding.productEdittext.requestFocus()
-                }
-                handleSaveBook()
-                cleanViews()
+
+                binding.sendCloudButton.performClick()
                 true
             } else false
         }
