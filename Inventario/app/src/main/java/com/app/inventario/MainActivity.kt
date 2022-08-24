@@ -63,11 +63,6 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
         }
         binding.clientEdittext.setOnKeyListener { view, keyCode, keyEvent ->
             if ((keyEvent.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                val client = binding.clientEdittext.text.toString().toUpperCase()
-                binding.clientImageview.showImage(client, this)
-                GlobalScope.launch {
-                    binding.clientNameTextView.showName(client)
-                }
 
                 binding.sendCloudButton.performClick()
                 true
@@ -113,6 +108,12 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
     }
 
     private fun handleSaveBook() {
+        val client = binding.clientEdittext.text.toString().toUpperCase()
+        binding.clientImageview.showImage(client, this)
+        GlobalScope.launch {
+            binding.clientNameTextView.showName(client)
+        }
+
         val productId = binding.productEdittext.text.toString()
         val clientId = binding.clientEdittext.text.toString()
         if (productId.isNotEmpty()) {
