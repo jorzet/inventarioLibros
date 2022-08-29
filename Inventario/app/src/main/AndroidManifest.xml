@@ -18,7 +18,8 @@
         android:theme="@style/Theme.Inventario"
         android:largeHeap="true"
         android:usesCleartextTraffic="true">
-        <receiver android:name="com.app.inventario.MainActivity$NetworkChangeReceiver"
+
+        <receiver android:name="com.app.inventario.ui.HomeActivity$NetworkChangeReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -26,14 +27,23 @@
         </receiver>
 
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".ui.SplashActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.HomeActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.LoginActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

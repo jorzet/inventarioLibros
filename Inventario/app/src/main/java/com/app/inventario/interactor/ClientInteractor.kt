@@ -1,13 +1,13 @@
 package com.app.inventario.interactor
 
-import com.app.inventario.connector.Repository
 import com.app.inventario.downloader.ClientDownloader
 import com.app.inventario.model.Client
+import com.app.inventario.repository.ClientRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class ClientInteractor {
-    private val repository: Repository = Repository()
+    private val repository: ClientRepository = ClientRepository()
 
     suspend fun executeGetClient(clientCode: String, onGetClientListener: ClientDownloader.OnGetClientListener) = withContext(Dispatchers.IO) {
         try {

@@ -1,4 +1,4 @@
-package com.app.inventario.connector
+package com.app.inventario.repository.connector
 
 import android.util.Log
 import java.sql.Connection

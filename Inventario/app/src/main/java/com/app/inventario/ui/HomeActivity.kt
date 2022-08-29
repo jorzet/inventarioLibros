@@ -1,4 +1,4 @@
-package com.app.inventario
+package com.app.inventario.ui
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -19,14 +19,18 @@ import com.app.inventario.downloader.showName
 import com.app.inventario.downloader.showPlaceHolder
 import com.app.inventario.interactor.SaveSellInteractor
 import com.app.inventario.interactor.SaveSellLocalInteractor
+import com.app.inventario.interactor.SaveSessionLocalInteractor
+import com.app.inventario.model.LoginAction
 import com.app.inventario.model.Sell
+import com.app.inventario.utils.click
+import com.app.inventario.utils.onKeyEventListener
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
+class HomeActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
 
     // binding
     private lateinit var binding: ActivityMainBinding
@@ -44,26 +48,40 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setListeners()
+        handleExtras()
+        showWelcome()
         binding.productEdittext.requestFocus()
         binding.registerCountTextview.text = SaveSellLocalInteractor(baseContext).getCountLocal().toString()
         registerNetworkBroadcastForNougat()
+    }
+
+    private fun handleExtras() {
+        val action = intent.getStringExtra(LoginActivity.LOGIN_ACTION)
+        if (action != null && action == LoginAction.REGISTER_ACTION.toString()) {
+
+        }
+    }
+
+    private fun showWelcome() {
+        val user = SaveSessionLocalInteractor(baseContext).getSavedSession()
+        val welcome = "Bienvenido:   " + (user?.completeName ?: "")
+        binding.welcomeTextView.text = welcome
     }
 
     /**
      * Set up listeners
      */
     private fun setListeners() {
-        binding.sendCloudButton.setOnClickListener {
+        binding.sendCloudButton click  {
             binding.productEdittext.post {  binding.productEdittext.requestFocus() }
             handleSaveBook()
             cleanViews()
         }
-        binding.addClientButton.setOnClickListener {
+        binding.addClientButton click  {
             showAddClient()
         }
-        binding.clientEdittext.setOnKeyListener { view, keyCode, keyEvent ->
+        binding.clientEdittext onKeyEventListener { view, keyCode, keyEvent ->
             if ((keyEvent.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-
                 binding.sendCloudButton.performClick()
                 true
             } else false
@@ -108,7 +126,7 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
     }
 
     private fun handleSaveBook() {
-        val client = binding.clientEdittext.text.toString().toUpperCase()
+        val client = binding.clientEdittext.text.toString().uppercase()
         binding.clientImageview.showImage(client, this)
         GlobalScope.launch {
             binding.clientNameTextView.showName(client)
@@ -121,9 +139,9 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
                 countRegisters++
                 binding.registerCountTextview.text = countRegisters.toString()
                 val sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
-                val currentDateandTime: String = sdf.format(Date())
+                val currentDateAndTime: String = sdf.format(Date())
 
-                val sell = Sell(productId, clientId, currentDateandTime, "status")
+                val sell = Sell(productId, clientId, currentDateAndTime, "status")
 
                 if (isConnected) {
                     SaveSellInteractor().execute(sell)
@@ -139,7 +157,7 @@ class MainActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
         }
     }
 
-    fun cleanViews() {
+    private fun cleanViews() {
         // reset views
         binding.productEdittext.run {
             setText("")
