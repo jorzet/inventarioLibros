@@ -43,6 +43,28 @@ CREATE TABLE IF NOT EXISTS `inventarioLibros`.`registrodelibros` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `mydb`.`User`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `inventarioLibros`.`User` (
+  `idUser` INT NOT NULL AUTO_INCREMENT,
+  `email` VARCHAR(255) NULL,
+  `password` VARCHAR(45) NULL,
+  `nick` VARCHAR(255) NULL,
+  `completeName` VARCHAR(255) NULL,
+  PRIMARY KEY (`idUser`))
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Admin`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `inventarioLibros`.`Admin` (
+  `idAdmin` INT NOT NULL AUTO_INCREMENT,
+  `email` VARCHAR(255) NULL,
+  `password` VARCHAR(45) NULL,
+  PRIMARY KEY (`idAdmin`))
+ENGINE = InnoDB;
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
@@ -63,6 +85,22 @@ INSERT INTO `cliente` VALUES ('BCBEB5', 'JUEN DIEGO MILAN DELGADO', 'activo');
 INSERT INTO `cliente` VALUES ('C6A73C', 'MARTHA LORENA MOLINERO HERNANDEZ', 'activo');
 INSERT INTO `cliente` VALUES ('F24C4D', 'KEVIN CRISTIAN CASTELLANOS CHAPARRO', 'activo');
 INSERT INTO `cliente` VALUES ('YU9601', 'BRANDON GARCIA ROMAN', 'activo');
+
+CALL insertUser("jorzet.94@gmail.com", "1234", "2233", "Jorge Zepeda Tinoco", @result);
+SELECT @result;
+
+CALL getUser("jorzet.94@gmail.com", "1234", @result);
+SELECT @result;
+
+
+CALL insertAdmin("ralphmagnifico@gmail.com", "1234", @result);
+SELECT @result;
+
+CALL getAdmin(@result);
+SELECT @result;
+
+CALL updateAdmin("ralphmagnifico@gmail.com", "jorzet.94@gmail.com", @result);
+SELECT @result;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -93,5 +131,69 @@ BEGIN
   INSERT INTO inventarioLibros.cliente (codigoCliente, clientName, `status`)
   VALUES (codigoCliente, clientName, `status`);
   SET response='Cliente registrado correctamente';
+END $$
+
+
+DELIMITER $$
+CREATE PROCEDURE getUser(IN email VARCHAR(255),IN pass VARCHAR(45), OUT response VARCHAR(100))
+BEGIN
+  IF EXISTS (SELECT u.idUser FROM inventarioLibros.`User` as u where u.email = email and u.`password` = pass)
+	THEN
+		SELECT * FROM inventarioLibros.`User` as u where u.email = email and u.`password` = pass;
+		SET response = 'OK';
+	ELSE
+		SET response = 'No existe el usuraio ingresado, compruebe email y contraseña';
+	END IF;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE insertUser(IN email VARCHAR(255), IN pass VARCHAR(45), IN nick VARCHAR(255), IN completeNAme VARCHAR(255),  OUT response VARCHAR(100))
+BEGIN
+ IF NOT EXISTS (SELECT u.idUser FROM inventarioLibros.`User` as u where u.email = email and u.`password` = pass)
+  THEN
+		INSERT INTO inventarioLibros.`User` (email, `password`, nick, completeName)
+		VALUES (email, pass, nick, completeName);
+		SET response='OK';
+  ELSE
+		SET response = 'Error, el usuario ya existe';
+  END IF;
+END $$
+
+
+DELIMITER $$
+CREATE PROCEDURE insertAdmin(IN email VARCHAR(255), IN pass VARCHAR(45),  OUT response VARCHAR(100))
+BEGIN
+ IF NOT EXISTS (SELECT u.idAdmin FROM inventarioLibros.`Admin` as u where u.email = email and u.`password` = pass)
+  THEN
+		INSERT INTO inventarioLibros.`Admin` (email, `password`)
+		VALUES (email, pass);
+		SET response='OK';
+  ELSE
+		SET response = 'Error, el administrador ya existe';
+  END IF;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE getAdmin(OUT response VARCHAR(100))
+BEGIN
+  IF EXISTS (SELECT u.idAdmin FROM inventarioLibros.`Admin` as u)
+	THEN
+		SELECT * FROM inventarioLibros.`Admin` as u;
+		SET response = 'OK';
+	ELSE
+		SET response = 'No existe el administrador ingresado, compruebe email';
+	END IF;
+END $$
+
+
+DELIMITER $$
+CREATE PROCEDURE updateAdmin(IN originalEmail VARCHAR(255), IN newEmail VARCHAR(45), OUT response VARCHAR(100))
+BEGIN
+ IF EXISTS (SELECT u.idAdmin FROM inventarioLibros.`Admin` as u WHERE u.email=originalEmail)
+	THEN 
+    UPDATE inventarioLibros.`Admin` as u SET u.email=newEmail WHERE u.email=originalEmail;
+ELSE 
+    SET response = 'No existe el administrador ingresado, compruebe email';
+END IF;
 END $$
 
