@@ -3,6 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Valeria/StudioProjects/inventarioLibros/Inventario/app/src/main/res/drawable/rounde_login_bvutton.xml" value="0.11" />
+        <entry key="..\:/Users/Valeria/StudioProjects/inventarioLibros/Inventario/app/src/main/res/drawable/rounded_register_button.xml" value="0.11" />
+        <entry key="..\:/Users/Valeria/StudioProjects/inventarioLibros/Inventario/app/src/main/res/layout/activity_login.xml" value="0.19791666666666666" />
+        <entry key="..\:/Users/Valeria/StudioProjects/inventarioLibros/Inventario/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/Users/Valeria/StudioProjects/inventarioLibros/Inventario/app/src/main/res/layout/activity_splash.xml" value="0.19791666666666666" />
+        <entry key="..\:/Users/Valeria/StudioProjects/inventarioLibros/Inventario/app/src/main/res/layout/add_client_fragment.xml" value="0.1" />
+        <entry key="..\:/Users/Valeria/StudioProjects/inventarioLibros/Inventario/app/src/main/res/layout/fragment_login.xml" value="0.25" />
+        <entry key="..\:/Users/Valeria/StudioProjects/inventarioLibros/Inventario/app/src/main/res/layout/fragment_register.xml" value="0.19791666666666666" />
+        <entry key="..\:/Users/Valeria/StudioProjects/inventarioLibros/Inventario/app/src/main/res/layout/login_rounded_button.xml" value="0.14924863387978143" />
         <entry key="..\:/Users/jorge.zepeda/AndroidStudioProjects/Inventario/app/src/main/res/layout/activity_main.xml" value="0.2151268115942029" />
       </map>
     </option>
