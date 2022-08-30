@@ -108,9 +108,17 @@ SET FOREIGN_KEY_CHECKS = 0;
 DELIMITER $$
 CREATE PROCEDURE insertBook(IN codigoLibro  varchar(255), IN codigoCredencial  varchar(255), IN `status`  varchar(255), IN fechaHora  varchar(255), OUT response VARCHAR(100))
 BEGIN
-  INSERT INTO inventarioLibros.registrodelibros (codigoLibro, `status`, fechaHora, Cliente_codigoCliente)
-  VALUES (codigoLibro, `status`, fechaHora, codigoCredencial);
-  SET response='Libro registrado correctamente';
+	IF EXISTS (SELECT c.codigoCliente FROM inventarioLibros.`Cliente` as c WHERE c.codigoCliente=codigoCredencial)
+	THEN
+	  INSERT INTO inventarioLibros.registrodelibros (codigoLibro, `status`, fechaHora, Cliente_codigoCliente)
+	  VALUES (codigoLibro, `status`, fechaHora, codigoCredencial);
+	  SET response='Libro registrado correctamente';
+	ELSE
+		CALL insertClient(codigoCredencial, codigoCredencial, "status", @result);
+		INSERT INTO inventarioLibros.registrodelibros (codigoLibro, `status`, fechaHora, Cliente_codigoCliente)
+		VALUES (codigoLibro, `status`, fechaHora, codigoCredencial);
+		SET response='Libro registrado correctamente';
+    END IF;
 END $$
 
 DELIMITER $$
@@ -128,21 +136,21 @@ END $$
 DELIMITER $$
 CREATE PROCEDURE insertClient(IN codigoCliente VARCHAR(15), IN clientName VARCHAR(45), IN `status` VARCHAR(45), OUT response VARCHAR(100))
 BEGIN
-  INSERT INTO inventarioLibros.cliente (codigoCliente, clientName, `status`)
+  INSERT INTO inventarioLibros.cliente (codigoCliente, nombre, `status`)
   VALUES (codigoCliente, clientName, `status`);
   SET response='Cliente registrado correctamente';
 END $$
 
 
 DELIMITER $$
-CREATE PROCEDURE getUser(IN email VARCHAR(255),IN pass VARCHAR(45), OUT response VARCHAR(100))
+CREATE PROCEDURE getUser(IN nick VARCHAR(255),IN pass VARCHAR(45), OUT response VARCHAR(100))
 BEGIN
-  IF EXISTS (SELECT u.idUser FROM inventarioLibros.`User` as u where u.email = email and u.`password` = pass)
+  IF EXISTS (SELECT u.idUser FROM inventarioLibros.`User` as u where u.nick = nick and u.`password` = pass)
 	THEN
-		SELECT * FROM inventarioLibros.`User` as u where u.email = email and u.`password` = pass;
+		SELECT * FROM inventarioLibros.`User` as u where u.nick = nick and u.`password` = pass;
 		SET response = 'OK';
 	ELSE
-		SET response = 'No existe el usuraio ingresado, compruebe email y contraseña';
+		SET response = 'No existe el usuraio ingresado, compruebe nick y contraseña';
 	END IF;
 END $$
 
