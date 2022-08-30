@@ -35,9 +35,9 @@ class UserInteractor {
         }
     }
 
-    suspend fun executeGetClient(email: String, password: String, onGetUserListener: OnGetUserListener) {
+    suspend fun executeGetClient(nick: String, password: String, onGetUserListener: OnGetUserListener) {
         try {
-            val user = repository.getUser(email, password)
+            val user = repository.getUser(nick, password)
             if (user != null) {
                 onGetUserListener.onGetUserSuccess(user)
             } else {

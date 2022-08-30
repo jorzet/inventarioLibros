@@ -32,7 +32,7 @@ class ClientDownloader {
 }
 
     fun ImageView.showPlaceHolder(): ImageView {
-        this.setImageResource(R.drawable.profile_background)
+        this.setImageResource(R.drawable.profile_icon)
         return this
     }
 
@@ -45,8 +45,8 @@ class ClientDownloader {
             .build()
 
         picasso.load(url).fit().centerCrop()
-            .placeholder(R.drawable.profile_background)
-            .error(R.drawable.profile_background)
+            .placeholder(R.drawable.profile_icon)
+            .error(R.drawable.profile_icon)
             .into(this, object: Callback {
                 override fun onSuccess() {
                     onShowImageListener.onImageLoaded()

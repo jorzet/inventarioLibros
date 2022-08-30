@@ -3,7 +3,7 @@
 
     <!--LOGIN-->
     <string name="login_title_text">LOGIN</string>
-    <string name="user_login_text">Usuario</string>
+    <string name="user_login_text">Usuario (nick)</string>
     <string name="password_login_text">Clave</string>
     <string name="login_text">Ingresar</string>
     <string name="register_text">Registrarse</string>

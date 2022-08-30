@@ -10,9 +10,9 @@ import java.util.regex.Pattern
 
 class LoginViewModel: BaseViewModel() {
 
-    fun getUser(email: String, password: String, onGetUserListener: UserInteractor.OnGetUserListener) {
+    fun getUser(nick: String, password: String, onGetUserListener: UserInteractor.OnGetUserListener) {
         GlobalScope.launch {
-            UserInteractor().executeGetClient(email, password, onGetUserListener)
+            UserInteractor().executeGetClient(nick, password, onGetUserListener)
         }
     }
 }

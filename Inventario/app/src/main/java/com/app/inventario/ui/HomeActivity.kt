@@ -12,7 +12,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.app.inventario.databinding.ActivityMainBinding
+import com.app.inventario.databinding.ActivityHomeBinding
 import com.app.inventario.downloader.ClientDownloader
 import com.app.inventario.downloader.showImage
 import com.app.inventario.downloader.showName
@@ -24,6 +24,8 @@ import com.app.inventario.model.LoginAction
 import com.app.inventario.model.Sell
 import com.app.inventario.utils.click
 import com.app.inventario.utils.onKeyEventListener
+import com.app.inventario.utils.showOffline
+import com.app.inventario.utils.showOnline
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -33,7 +35,7 @@ import java.util.*
 class HomeActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
 
     // binding
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityHomeBinding
 
     // receiver
     private lateinit var mNetworkChangeReceiver: NetworkChangeReceiver
@@ -45,7 +47,7 @@ class HomeActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setListeners()
         handleExtras()
@@ -64,7 +66,7 @@ class HomeActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
 
     private fun showWelcome() {
         val user = SaveSessionLocalInteractor(baseContext).getSavedSession()
-        val welcome = "Bienvenido:   " + (user?.completeName ?: "")
+        val welcome = "Bienvenido   " + (user?.completeName ?: "")
         binding.welcomeTextView.text = welcome
     }
 
@@ -80,6 +82,9 @@ class HomeActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
         binding.addClientButton click  {
             showAddClient()
         }
+        binding.closeApp click {
+            finish()
+        }
         binding.clientEdittext onKeyEventListener { view, keyCode, keyEvent ->
             if ((keyEvent.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 binding.sendCloudButton.performClick()
@@ -91,6 +96,7 @@ class HomeActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
     private fun registerNetworkBroadcastForNougat() {
         mNetworkChangeReceiver = NetworkChangeReceiver(object : ConnectionNetworkListener {
             override fun onConnected() {
+                binding.onlineImageView.showOnline()
                 showError("Conectado")
                 isConnected = true
 
@@ -107,6 +113,7 @@ class HomeActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
                 }
             }
             override fun onDisconnected() {
+                binding.onlineImageView.showOffline()
                 showError("Desconectado")
                 isConnected = false
             }
@@ -136,8 +143,6 @@ class HomeActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
         val clientId = binding.clientEdittext.text.toString()
         if (productId.isNotEmpty()) {
             if (clientId.isNotEmpty()) {
-                countRegisters++
-                binding.registerCountTextview.text = countRegisters.toString()
                 val sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
                 val currentDateAndTime: String = sdf.format(Date())
 
@@ -146,6 +151,8 @@ class HomeActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
                 if (isConnected) {
                     SaveSellInteractor().execute(sell)
                 } else {
+                    countRegisters++
+                    binding.registerCountTextview.text = countRegisters.toString()
                     SaveSellLocalInteractor(this).execute(sell, countRegisters)
                     savePending = true
                 }

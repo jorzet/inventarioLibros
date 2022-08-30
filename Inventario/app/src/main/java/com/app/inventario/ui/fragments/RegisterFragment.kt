@@ -42,7 +42,13 @@ class RegisterFragment: Fragment() {
         binding.cancelButton click {
             goBack()
         }
-        binding.completeNameTextInputEditText onKeyEventListener { view, keyCode, keyEvent ->
+        binding.backImageView click {
+            goBack()
+        }
+        binding.closeApp click {
+            activity?.finish()
+        }
+        binding.completeNameTextInputEditText onKeyEventListener { _, keyCode, keyEvent ->
             if ((keyEvent.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 binding.registerButton.performClick()
                 true
@@ -100,9 +106,7 @@ class RegisterFragment: Fragment() {
     }
 
     private fun goBack() {
-        activity?.let {
-            it.onBackPressed()
-        }
+        activity?.onBackPressed()
     }
 
     private fun showError(error: String) {

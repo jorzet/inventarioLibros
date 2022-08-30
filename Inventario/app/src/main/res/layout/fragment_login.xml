@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
     <ScrollView
@@ -14,6 +14,23 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingBottom="40dp">
+
+            <RelativeLayout
+                android:id="@+id/toolbar_question"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/blue_toolbar_home_background">
+
+                <ImageButton
+                    android:id="@+id/close_app"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/close_icon"/>
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/login_title_textView"
@@ -47,19 +64,23 @@
                 android:paddingTop="40dp">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/user_text_input_layout"
+                        android:id="@+id/user_nick_text_input_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="20dp"
                         android:layout_marginStart="20dp"
-                        android:layout_marginBottom="10dp">
+                        android:layout_marginBottom="10dp"
+                        app:startIconDrawable="@android:drawable/ic_lock_lock">
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/user_text_input_edit_text"
+                            android:id="@+id/user_nick_text_input_edit_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/user_login_text"
                             android:singleLine="true"
-                            android:imeOptions="actionNext"/>
+                            android:imeOptions="actionNext"
+                            app:counterEnabled="true"
+                            app:endIconMode="clear_text"
+                            app:helperText="Ingrese el su nick"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -68,13 +89,15 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="20dp"
                         android:layout_marginStart="20dp"
-                        android:layout_marginBottom="10dp">
+                        android:layout_marginBottom="10dp"
+                        app:endIconMode="password_toggle">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/password_text_input_edit_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/password_login_text"
-                            android:singleLine="true"/>
+                            android:singleLine="true"
+                            android:inputType="textPassword" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.appcompat.widget.AppCompatButton

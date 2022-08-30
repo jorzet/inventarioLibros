@@ -37,6 +37,9 @@ class LoginFragment: Fragment() {
     }
 
     private fun setUpListener() {
+        binding.closeApp click {
+            activity?.finish()
+        }
         binding.loginButton click {
             login()
         }
@@ -55,33 +58,29 @@ class LoginFragment: Fragment() {
     }
 
     private fun login() {
-        val email = binding.userTextInputEditText.text.toString()
+        val nick = binding.userNickTextInputEditText.text.toString()
         val pass = binding.passwordTextInputEditText.text.toString()
-        if (email.isNotEmpty()) {
-            if (viewModel.validateEmail(email)) {
-                if (pass.isNotEmpty()) {
-                    viewModel.getUser(email, pass, object: UserInteractor.OnGetUserListener {
-                        override fun onGetUserSuccess(user: User?) {
-                            if (user != null ) {
-                                activity?.let {
-                                    viewModel.saveSession(it.baseContext, user)
-                                }
-                                showHome()
-                            } else {
-                                showError("Necesita ingresar una contraseña")
-
+        if (nick.isNotEmpty()) {
+            if (pass.isNotEmpty()) {
+                viewModel.getUser(nick, pass, object: UserInteractor.OnGetUserListener {
+                    override fun onGetUserSuccess(user: User?) {
+                        if (user != null ) {
+                            activity?.let {
+                                viewModel.saveSession(it.baseContext, user)
                             }
-                        }
+                            showHome()
+                        } else {
+                            showError("Necesita ingresar una contraseña")
 
-                        override fun onGetUserError(error: Error) {
-                            showError(error.error.toString())
                         }
-                    })
-                } else {
-                    showError("Necesita ingresar una contraseña")
-                }
+                    }
+
+                    override fun onGetUserError(error: Error) {
+                        showError(error.error.toString())
+                    }
+                })
             } else {
-                showError("Ingrese un email valido ejemplo@ejemplo.com")
+                showError("Necesita ingresar una contraseña")
             }
         } else {
             showError("Necesita ingrear un email")
@@ -104,8 +103,8 @@ class LoginFragment: Fragment() {
     }
 
     private fun sendEmail() {
-        if (binding.userTextInputEditText.text.toString().isEmpty()) {
-            showError("Ingrese su email para poder reestablecer su contraseña")
+        if (binding.userNickTextInputEditText.text.toString().isEmpty()) {
+            showError("Ingrese su nick para poder reestablecer su contraseña")
         } else {
             val emailIntent = Intent(Intent.ACTION_SENDTO,
                 Uri.fromParts("mailto", "ralphmagnifico@gmail.com", null))
@@ -116,10 +115,12 @@ class LoginFragment: Fragment() {
     }
 
     private fun getMessage(): String {
-        return "Email account to reset: " + binding.userTextInputEditText.text.toString()
+        return "Nick account to reset: " + binding.userNickTextInputEditText.text.toString()
     }
 
     private fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_LONG).show()
+        activity?.runOnUiThread {
+            Toast.makeText(activity, error, Toast.LENGTH_LONG).show()
+        }
     }
 }

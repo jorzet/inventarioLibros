@@ -23,7 +23,6 @@ class LoginActivity: AppCompatActivity() {
         supportFragmentManager
             .beginTransaction()
             .add(binding.fragmentContainerView.id, LoginFragment())
-            .addToBackStack("login_fragment")
             .commit()
     }
 

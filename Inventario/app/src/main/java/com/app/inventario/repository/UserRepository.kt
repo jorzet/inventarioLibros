@@ -43,7 +43,7 @@ class UserRepository {
         return result
     }
 
-    fun getUser(email: String, password: String): User? {
+    fun getUser(nick: String, password: String): User? {
         bdConnector = BDconnector()
         var sp: CallableStatement? = null
         lateinit var user: User
@@ -56,7 +56,7 @@ class UserRepository {
                 sp = bdConnector.conexionMySQL.prepareCall(SQL)
                 sp.setEscapeProcessing(true)
                 sp.queryTimeout = 20
-                sp.setString(1, email)
+                sp.setString(1, nick)
                 sp.setString(2, password)
                 sp.registerOutParameter(3, Types.VARCHAR)
                 val rs = sp.executeQuery()
