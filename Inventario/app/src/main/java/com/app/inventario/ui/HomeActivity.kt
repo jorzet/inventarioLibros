@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -29,8 +30,8 @@ import com.app.inventario.utils.showOnline
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
-
+import java.util.Date
+import java.util.Locale
 
 class HomeActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
 
@@ -60,7 +61,7 @@ class HomeActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
     private fun handleExtras() {
         val action = intent.getStringExtra(LoginActivity.LOGIN_ACTION)
         if (action != null && action == LoginAction.REGISTER_ACTION.toString()) {
-
+            Log.d(LoginActivity.LOGIN_ACTION, "REGISTER_ACTION")
         }
     }
 
