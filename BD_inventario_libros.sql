@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS `inventarioLibros`.`registrodelibros` (
   `codigoLibro` VARCHAR(255) NULL,
   `status` VARCHAR(255) NULL,
   `fechaHora` VARCHAR(255) NULL,
+  `userName` VARCHAR(255) NULL,
   `Cliente_codigoCliente` VARCHAR(15) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_registrodelibros_Cliente_idx` (`Cliente_codigoCliente` ASC) VISIBLE,
@@ -70,53 +71,19 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 
--- ----------------------------
--- Records of clientes
--- ----------------------------
-INSERT INTO `cliente` VALUES ('2C302F', 'MANUEL LANDEROS TINAJERO', 'activo');
-INSERT INTO `cliente` VALUES ('3E41C8', 'CARLOS MANUEL DE LA MORA MERCADO', 'activo');
-INSERT INTO `cliente` VALUES ('7F5280', 'VERONICA LARA SANTOS', 'activo');
-INSERT INTO `cliente` VALUES ('43E500', 'VIANNEY LOPEZ CRUZ', 'activo');
-INSERT INTO `cliente` VALUES ('79C5C4', 'DIANA CAROLINA FIGUEROA', 'activo');
-INSERT INTO `cliente` VALUES ('96CB3A', 'BRANDON DANIEL LOPEZ GONZALEZ', 'activo');
-INSERT INTO `cliente` VALUES ('ALM231', 'OSCAR RAMIREZ TORREZ', 'activo');
-INSERT INTO `cliente` VALUES ('B97B63', 'JORGE LOPEZ ZANCHEZ', 'activo');
-INSERT INTO `cliente` VALUES ('BCBEB5', 'JUEN DIEGO MILAN DELGADO', 'activo');
-INSERT INTO `cliente` VALUES ('C6A73C', 'MARTHA LORENA MOLINERO HERNANDEZ', 'activo');
-INSERT INTO `cliente` VALUES ('F24C4D', 'KEVIN CRISTIAN CASTELLANOS CHAPARRO', 'activo');
-INSERT INTO `cliente` VALUES ('YU9601', 'BRANDON GARCIA ROMAN', 'activo');
-
-CALL insertUser("jorzet.94@gmail.com", "1234", "2233", "Jorge Zepeda Tinoco", @result);
-SELECT @result;
-
-CALL getUser("jorzet.94@gmail.com", "1234", @result);
-SELECT @result;
-
-
-CALL insertAdmin("ralphmagnifico@gmail.com", "1234", @result);
-SELECT @result;
-
-CALL getAdmin(@result);
-SELECT @result;
-
-CALL updateAdmin("ralphmagnifico@gmail.com", "jorzet.94@gmail.com", @result);
-SELECT @result;
-
-SET FOREIGN_KEY_CHECKS = 0;
-
 
 DELIMITER $$
-CREATE PROCEDURE insertBook(IN codigoLibro  varchar(255), IN codigoCredencial  varchar(255), IN `status`  varchar(255), IN fechaHora  varchar(255), OUT response VARCHAR(100))
+CREATE PROCEDURE insertBook(IN codigoLibro  varchar(255), IN codigoCredencial  varchar(255), IN `status`  varchar(255), IN fechaHora  varchar(255), IN userName VARCHAR(255), OUT response VARCHAR(100))
 BEGIN
 	IF EXISTS (SELECT c.codigoCliente FROM inventarioLibros.`Cliente` as c WHERE c.codigoCliente=codigoCredencial)
 	THEN
-	  INSERT INTO inventarioLibros.registrodelibros (codigoLibro, `status`, fechaHora, Cliente_codigoCliente)
-	  VALUES (codigoLibro, `status`, fechaHora, codigoCredencial);
+	  INSERT INTO inventarioLibros.registrodelibros (codigoLibro, `status`, fechaHora, userName, Cliente_codigoCliente)
+	  VALUES (codigoLibro, `status`, fechaHora, userName, codigoCredencial);
 	  SET response='Libro registrado correctamente';
 	ELSE
 		CALL insertClient(codigoCredencial, codigoCredencial, "status", @result);
-		INSERT INTO inventarioLibros.registrodelibros (codigoLibro, `status`, fechaHora, Cliente_codigoCliente)
-		VALUES (codigoLibro, `status`, fechaHora, codigoCredencial);
+		INSERT INTO inventarioLibros.registrodelibros (codigoLibro, `status`, fechaHora, userName, Cliente_codigoCliente)
+		VALUES (codigoLibro, `status`, fechaHora, userName, codigoCredencial);
 		SET response='Libro registrado correctamente';
     END IF;
 END $$
@@ -204,4 +171,39 @@ ELSE
     SET response = 'No existe el administrador ingresado, compruebe email';
 END IF;
 END $$
+
+
+-- ----------------------cliente------
+-- Records of clientes
+-- ----------------------------
+INSERT INTO `cliente` VALUES ('2C302F', 'MANUEL LANDEROS TINAJERO', 'activo');
+INSERT INTO `cliente` VALUES ('3E41C8', 'CARLOS MANUEL DE LA MORA MERCADO', 'activo');
+INSERT INTO `cliente` VALUES ('7F5280', 'VERONICA LARA SANTOS', 'activo');
+INSERT INTO `cliente` VALUES ('43E500', 'VIANNEY LOPEZ CRUZ', 'activo');
+INSERT INTO `cliente` VALUES ('79C5C4', 'DIANA CAROLINA FIGUEROA', 'activo');
+INSERT INTO `cliente` VALUES ('96CB3A', 'BRANDON DANIEL LOPEZ GONZALEZ', 'activo');
+INSERT INTO `cliente` VALUES ('ALM231', 'OSCAR RAMIREZ TORREZ', 'activo');
+INSERT INTO `cliente` VALUES ('B97B63', 'JORGE LOPEZ ZANCHEZ', 'activo');
+INSERT INTO `cliente` VALUES ('BCBEB5', 'JUEN DIEGO MILAN DELGADO', 'activo');
+INSERT INTO `cliente` VALUES ('C6A73C', 'MARTHA LORENA MOLINERO HERNANDEZ', 'activo');
+INSERT INTO `cliente` VALUES ('F24C4D', 'KEVIN CRISTIAN CASTELLANOS CHAPARRO', 'activo');
+INSERT INTO `cliente` VALUES ('YU9601', 'BRANDON GARCIA ROMAN', 'activo');
+
+CALL insertUser("jorzet.94@gmail.com", "1234", "2233", "Jorge Zepeda Tinoco", @result);
+SELECT @result;
+
+CALL getUser("jorzet.94@gmail.com", "1234", @result);
+SELECT @result;
+
+
+CALL insertAdmin("ralphmagnifico@gmail.com", "1234", @result);
+SELECT @result;
+
+CALL getAdmin(@result);
+SELECT @result;
+
+CALL updateAdmin("ralphmagnifico@gmail.com", "jorzet.94@gmail.com", @result);
+SELECT @result;
+
+SET FOREIGN_KEY_CHECKS = 0;
 
