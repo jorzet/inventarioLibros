@@ -46,6 +46,10 @@ class HomeActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
     private var isConnected: Boolean = true
     private var savePending: Boolean = true
 
+    companion object {
+        private const val WELCOME_TEXT = "Bienvenido   "
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -67,7 +71,7 @@ class HomeActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
 
     private fun showWelcome() {
         val user = SaveSessionLocalInteractor(baseContext).getSavedSession()
-        val welcome = "Bienvenido   " + (user?.completeName ?: "")
+        val welcome = WELCOME_TEXT + (user?.completeName ?: "")
         binding.welcomeTextView.text = welcome
     }
 
@@ -146,8 +150,9 @@ class HomeActivity : AppCompatActivity(), ClientDownloader.OnShowImageListener{
             if (clientId.isNotEmpty()) {
                 val sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
                 val currentDateAndTime: String = sdf.format(Date())
+                val userName = binding.welcomeTextView.text.toString().replace(WELCOME_TEXT, "")
 
-                val sell = Sell(productId, clientId, currentDateAndTime, "status")
+                val sell = Sell(productId, clientId, currentDateAndTime, "status", userName)
 
                 if (isConnected) {
                     SaveSellInteractor().execute(sell)

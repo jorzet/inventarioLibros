@@ -17,7 +17,7 @@ class BooksRepository {
 
         try {
             if (bdConnector.startConnection() != null) {
-                val SQL = "{call insertBook (?,?,?,?,?)}"
+                val SQL = "{call insertBook (?,?,?,?,?,?)}"
                 sp = bdConnector.conexionMySQL.prepareCall(SQL)
                 sp.setEscapeProcessing(true)
                 sp.queryTimeout = 20
@@ -25,9 +25,10 @@ class BooksRepository {
                 sp.setString(2, sell.clientId)
                 sp.setString(3, sell.status)
                 sp.setString(4, sell.date)
-                sp.registerOutParameter(5, Types.VARCHAR)
+                sp.setString(5, sell.userName)
+                sp.registerOutParameter(6, Types.VARCHAR)
                 sp.execute()
-                result = sp.getString(5)
+                result = sp.getString(6)
             }
         } catch (e: SQLException) {
             e.printStackTrace()
